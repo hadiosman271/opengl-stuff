@@ -49,6 +49,13 @@ struct shaderInfo cubeShaders[SHADERCOUNT] = {
 	.source =
 		"#version 330 core\n"
 
+		"struct Material {"
+			"vec3 ambient;"
+			"vec3 diffuse;"
+			"vec3 specular;"
+			"float shininess;"
+		"};"
+
 		"struct Light {"
 			"vec3 pos;"
 			"vec3 ambient;"
@@ -71,7 +78,7 @@ struct shaderInfo cubeShaders[SHADERCOUNT] = {
 			"vec3 lightDir = normalize(light.pos - fragPos);"
 			"vec3 norm = normalize(normal);"
 			"vec3 diffuse = max(dot(norm, lightDir), 0.0)"
-				"* material.diffuse * light.diffuse;"
+				"* material.diffuse * light.diffuse * 1.5;"
 			
 			"vec3 viewDir = normalize(viewPos - fragPos);"
 			"vec3 reflectDir = reflect(-lightDir, norm);"
