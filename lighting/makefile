@@ -1,0 +1,16 @@
+lighting.exe: ./.o/main.o ./.o/window.o ./.o/glad.o
+	gcc -g -Wall -o lighting.exe ./.o/main.o ./.o/window.o ./.o/glad.o -lm -lglfw3 -lopengl32 -lgdi32 -L./libs
+	
+./.o/main.o: | ./.o
+	gcc -g -Wall -o ./.o/main.o -c ./src/main.c -I./src -I./libs/include
+
+./.o/window.o: | ./.o
+	gcc -g -Wall -o ./.o/window.o -c ./src/window.c -I./src -I./libs/include
+./.o/glad.o: | ./.o
+	gcc -g -Wall -o ./.o/glad.o -c ./libs/glad.c -I./libs/include
+
+./.o:
+	mkdir ./.o
+
+clean:
+	rm -r ./.o
