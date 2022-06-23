@@ -68,13 +68,18 @@ int main(void) {
 	uniformVec3(cubeProgram, "light.diffuse", vec3Half);
 	uniformVec3(cubeProgram, "light.specular", lightColour);
 	uniformVec3(cubeProgram, "light.pos", lightPos);
-	
+
+	uniformFloat(cubeProgram, "material.ambient", 0.8f);
+	uniformFloat(cubeProgram, "material.diffuse", 1.5f);
+	uniformFloat(cubeProgram, "material.specular", 1.5f);
+	uniformFloat(cubeProgram, "material.shininess", 32.0f);
+
 	uniformMat4(lightProgram, "model", lmodel);
 	uniformVec3(lightProgram, "lightColour", lightColour);
 
 	updateCamera(0, 0);
 
-	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 	glEnable(GL_DEPTH_TEST);
 
 	while (running()) {
