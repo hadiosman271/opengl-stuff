@@ -70,7 +70,7 @@ int main(void) {
 	uniformVec3(cubeProgram, "light.pos", lightPos);
 
 	uniformFloat(cubeProgram, "material.ambient", 0.8f);
-	uniformFloat(cubeProgram, "material.diffuse", 1.5f);
+	uniformFloat(cubeProgram, "material.diffuse", 2.0f);
 	uniformFloat(cubeProgram, "material.specular", 1.5f);
 	uniformFloat(cubeProgram, "material.shininess", 32.0f);
 
