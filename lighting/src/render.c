@@ -39,7 +39,6 @@ void setup(void) {
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE,
 		9 * sizeof(float), (void *) (6 * sizeof(float)));
 
-	unsigned lightVAO;
 	glGenVertexArrays(1, &lightVAO);
 
 	glBindVertexArray(lightVAO);
