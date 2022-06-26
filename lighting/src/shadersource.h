@@ -29,7 +29,7 @@ struct shaderInfo cubeShaders[SHADERCOUNT] = {
 		"#version 330 core\n"
 
 		"struct Material {"
-			"float specular;"
+			"vec3 specular;"
 			"float shininess;"
 		"};"
 
