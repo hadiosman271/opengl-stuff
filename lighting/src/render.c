@@ -1,6 +1,6 @@
 #include "render.h"
 #include "shader.h"
-#include "shadertext.h"
+#include "shadersource.h"
 #include "camera.h"
 #include "cubie.h"
 
