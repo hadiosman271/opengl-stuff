@@ -3,15 +3,14 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 #include <glad/glad.h>
 #include <cglm/cglm.h>
 
-enum { X, Y, Z };
+#define glCheckError() glCheckError_(__FILE__, __LINE__)
 
 GLenum glCheckError_(const char *file, int line);
 
-#define glCheckError() glCheckError_(__FILE__, __LINE__)
+enum { X, Y, Z };
 
 #endif

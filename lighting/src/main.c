@@ -1,3 +1,5 @@
+#include <string.h>
+
 #include "render.h"
 #include "camera.h"
 
