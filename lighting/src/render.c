@@ -8,7 +8,7 @@ unsigned verts;
 unsigned VBO, cubeVAO, lightVAO;
 unsigned cubeProgram, lightProgram;
 vec3 *cubePos;
-vec3 vecThird = { 0.333, 0.333, 0.333 };
+vec3 vec3third = { 0.333, 0.333, 0.333 };
 extern struct camera cam;
 extern unsigned SCR_WIDTH, SCR_HEIGHT;
 
@@ -52,26 +52,25 @@ void setup(void) {
 	cubeProgram = createShaderProgram(cubeShaders, SHADERCOUNT);
 	lightProgram = createShaderProgram(lightShaders, SHADERCOUNT);
 
-	vec3 lightPos = { 1.2f, 1.0f, 2.0f };
-	vec3 lightColour = { 1.0f, 1.0f, 1.0f };
-	vec3 vecFifth = { 0.2f, 0.2f, 0.2f };
-	vec3 vecHalf = { 0.5f, 0.5f, 0.5f };
-	mat4 lmodel = GLM_MAT4_IDENTITY_INIT;
-	glm_translate(lmodel, lightPos);
-	glm_scale(lmodel, vecFifth);
+	mat4 lModel = GLM_MAT4_IDENTITY_INIT;
+	glm_translate(lModel, lightPos);
+	glm_scale(lModel, vecFifth);
 
-	uniformVec3(cubeProgram, "light.ambient", vecFifth);
-	uniformVec3(cubeProgram, "light.diffuse", vecHalf);
-	uniformVec3(cubeProgram, "light.specular", lightColour);
+	vec3 lAmbient = { 0.2f, 0.2f, 0.2f };
+	vec3 lDiffuse = { 0.5f, 0.5f, 0.5f };
+	vec3 lColour = { 1.0f, 1.0f, 1.0f };
+	vec3 lPos = { 1.2f, 1.0f, 2.0f };
+	uniformVec3(cubeProgram, "light.ambient", lAmbient);
+	uniformVec3(cubeProgram, "light.diffuse", lDiffuse);
+	uniformVec3(cubeProgram, "light.specular", lColour);
 	uniformVec3(cubeProgram, "light.pos", lightPos);
+	
+	vec3 mSpecular = { 0.5f, 0.5f, 0.5f };
+	uniformVec3(cubeProgram, "material.specular", mSpecular);
+	uniformVec3(cubeProgram, "material.shininess", 32.0f);
 
-	uniformFloat(cubeProgram, "material.ambient", 0.8f);
-	uniformFloat(cubeProgram, "material.diffuse", 2.0f);
-	uniformFloat(cubeProgram, "material.specular", 1.5f);
-	uniformFloat(cubeProgram, "material.shininess", 32.0f);
-
-	uniformMat4(lightProgram, "model", lmodel);
-	uniformVec3(lightProgram, "lightColour", lightColour);
+	uniformMat4(lightProgram, "model", lModel);
+	uniformVec3(lightProgram, "lightColour", lColour);
 
 	updateCamera(0, 0);
 
@@ -105,7 +104,7 @@ void draw(void) {
 
 	for (int i = 0; i < 27; i++) {
 		mat4 model = GLM_MAT4_IDENTITY_INIT;
-		glm_scale(model, vecThird);
+		glm_scale(model, vec3third);
 		glm_translate(model, cubePos[i]);
 		uniformMat4(cubeProgram, "model", model);
 

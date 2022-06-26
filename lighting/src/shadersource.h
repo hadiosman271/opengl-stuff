@@ -29,17 +29,15 @@ struct shaderInfo cubeShaders[SHADERCOUNT] = {
 		"#version 330 core\n"
 
 		"struct Material {"
-			"float ambient;"
-			"float diffuse;"
 			"float specular;"
 			"float shininess;"
 		"};"
 
 		"struct Light {"
-			"vec3 pos;"
 			"vec3 ambient;"
 			"vec3 diffuse;"
 			"vec3 specular;"
+			"vec3 pos;"
 		"};"
 		
 		"in vec3 fragPos;"
@@ -53,18 +51,18 @@ struct shaderInfo cubeShaders[SHADERCOUNT] = {
 		"uniform Light light;"
 		
 		"void main() {"
-			"vec3 ambient = clamp(material.ambient * light.ambient * colour, 0.0, 1.0);"
+			"vec3 ambient = light.ambient * colour;"
 			
 			"vec3 lightDir = normalize(light.pos - fragPos);"
 			"vec3 norm = normalize(normal);"
-			"vec3 diffuse = clamp(dot(norm, lightDir)"
-				"* material.diffuse * light.diffuse * colour, 0.0, 1.0);"
+			"vec3 diffuse = max(dot(norm, lightDir), 0.0)"
+				"* light.diffuse * colour;"
 			
 			"vec3 viewDir = normalize(viewPos - fragPos);"
 			"vec3 reflectDir = reflect(-lightDir, norm);"
-			"vec3 specular = clamp(pow(max(dot("
+			"vec3 specular = pow(max(dot("
 				"viewDir, reflectDir), 0.0), material.shininess)"
-				"* material.specular * light.specular * colour, 0.0, 1.0);"
+				"* light.specular * material.specular;"
 
 			"vec3 result = ambient + diffuse + specular;"
 			"fragColour = vec4(result, 1.0);"
