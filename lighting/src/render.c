@@ -52,22 +52,22 @@ void setup(void) {
 	cubeProgram = createShaderProgram(cubeShaders, SHADERCOUNT);
 	lightProgram = createShaderProgram(lightShaders, SHADERCOUNT);
 
+	vec3 vec3fifth = { 0.2f, 0.2f, 0.2f };
+	vec3 lPos = { 1.2f, 1.0f, 2.0f };
 	mat4 lModel = GLM_MAT4_IDENTITY_INIT;
-	glm_translate(lModel, lightPos);
-	glm_scale(lModel, vecFifth);
+	glm_translate(lModel, lPos);
+	glm_scale(lModel, vec3fifth);
 
-	vec3 lAmbient = { 0.2f, 0.2f, 0.2f };
 	vec3 lDiffuse = { 0.5f, 0.5f, 0.5f };
 	vec3 lColour = { 1.0f, 1.0f, 1.0f };
-	vec3 lPos = { 1.2f, 1.0f, 2.0f };
-	uniformVec3(cubeProgram, "light.ambient", lAmbient);
+	uniformVec3(cubeProgram, "light.ambient", vec3fifth);
 	uniformVec3(cubeProgram, "light.diffuse", lDiffuse);
 	uniformVec3(cubeProgram, "light.specular", lColour);
-	uniformVec3(cubeProgram, "light.pos", lightPos);
+	uniformVec3(cubeProgram, "light.pos", lPos);
 	
 	vec3 mSpecular = { 0.5f, 0.5f, 0.5f };
 	uniformVec3(cubeProgram, "material.specular", mSpecular);
-	uniformVec3(cubeProgram, "material.shininess", 32.0f);
+	uniformFloat(cubeProgram, "material.shininess", 32.0f);
 
 	uniformMat4(lightProgram, "model", lModel);
 	uniformVec3(lightProgram, "lightColour", lColour);
