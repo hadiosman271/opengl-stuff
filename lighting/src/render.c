@@ -53,24 +53,24 @@ void setup(void) {
 	lightProgram = createShaderProgram(lightShaders, SHADERCOUNT);
 
 	vec3 vec3fifth = { 0.2f, 0.2f, 0.2f };
-	vec3 lPos = { 1.2f, 1.0f, 2.0f };
-	mat4 lModel = GLM_MAT4_IDENTITY_INIT;
-	glm_translate(lModel, lPos);
-	glm_scale(lModel, vec3fifth);
+	vec3 lightPos = { 1.2f, 1.0f, 2.0f };
+	mat4 lightModel = GLM_MAT4_IDENTITY_INIT;
+	glm_translate(lightModel, lightPos);
+	glm_scale(lightModel, vec3fifth);
 
-	vec3 lDiffuse = { 0.5f, 0.5f, 0.5f };
-	vec3 lColour = { 1.0f, 1.0f, 1.0f };
+	vec3 lightDiffuse = { 0.5f, 0.5f, 0.5f };
+	vec3 lightColour = { 1.0f, 1.0f, 1.0f };
 	uniformVec3(cubeProgram, "light.ambient", vec3fifth);
-	uniformVec3(cubeProgram, "light.diffuse", lDiffuse);
-	uniformVec3(cubeProgram, "light.specular", lColour);
-	uniformVec3(cubeProgram, "light.pos", lPos);
+	uniformVec3(cubeProgram, "light.diffuse", lightDiffuse);
+	uniformVec3(cubeProgram, "light.specular", lightColour);
+	uniformVec3(cubeProgram, "light.pos", lightPos);
 	
 	vec3 mSpecular = { 0.5f, 0.5f, 0.5f };
 	uniformVec3(cubeProgram, "material.specular", mSpecular);
 	uniformFloat(cubeProgram, "material.shininess", 32.0f);
 
-	uniformMat4(lightProgram, "model", lModel);
-	uniformVec3(lightProgram, "lightColour", lColour);
+	uniformMat4(lightProgram, "model", lightModel);
+	uniformVec3(lightProgram, "lightColour", lightColour);
 
 	updateCamera(0, 0);
 
