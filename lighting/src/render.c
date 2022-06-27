@@ -1,28 +1,32 @@
 #include "render.h"
+#include "images.h"
 #include "shader.h"
 #include "shadersource.h"
 #include "camera.h"
-#include "cubie.h"
+#include "verts.h"
 
 unsigned verts;
 unsigned VBO, cubeVAO, lightVAO;
 unsigned cubeProgram, lightProgram;
+unsigned texture;
 
-vec3 *cubePos;
-vec3 rotate;
-vec3 vec3third = { 0.333, 0.333, 0.333 };
+extern vec3 cubePos[];
+//vec3 rotate;
+//vec3 vec3third = { 0.333, 0.333, 0.333 };
 
 extern struct camera cam;
 extern unsigned SCR_WIDTH, SCR_HEIGHT;
 
 void setup(void) {
+	setIcon();
+
 	glGenVertexArrays(1, &cubeVAO);
 	glGenBuffers(1, &VBO);
 
 	unsigned size;
-	float *cube = cubie(&size);
-	verts = size / (9 * sizeof(float));
-	cubePos = cubiePos(cube[Z] * 2);
+	float *cube = box(&size);
+	verts = size / (8 * sizeof(float));
+	//cubePos = rubiksPos(cube[Z] * 2);
 
 	glBindVertexArray(cubeVAO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
@@ -32,15 +36,15 @@ void setup(void) {
 	// positions
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,
-		9 * sizeof(float), (void *) 0);
-	// colours
+		8 * sizeof(float), (void *) 0);
+	// normals
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE,
-		9 * sizeof(float), (void *) (3 * sizeof(float)));
-	// normal vectors
+		8 * sizeof(float), (void *) (3 * sizeof(float)));
+	// texture coords
 	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE,
-		9 * sizeof(float), (void *) (6 * sizeof(float)));
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE,
+		8 * sizeof(float), (void *) (6 * sizeof(float)));
 
 	glGenVertexArrays(1, &lightVAO);
 
@@ -50,20 +54,25 @@ void setup(void) {
 	// positions
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,
-		9 * sizeof(float), (void *) 0);
+		8 * sizeof(float), (void *) 0);
 
 	cubeProgram = createShaderProgram(cubeShaders, SHADERCOUNT);
 	lightProgram = createShaderProgram(lightShaders, SHADERCOUNT);
 
+	glGenTextures(1, &texture);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, texture);
+	loadTexture();
+
 	vec3 lightAmbient = { 0.2f, 0.2f, 0.2f };
-	vec3 lightDiffuse = { 0.5f, 0.5f, 0.5f };
+	vec3 vec3half = { 0.5f, 0.5f, 0.5f };
 	vec3 lightColour = { 1.0f, 1.0f, 1.0f };
 	uniformVec3(cubeProgram, "light.ambient", lightAmbient);
-	uniformVec3(cubeProgram, "light.diffuse", lightDiffuse);
+	uniformVec3(cubeProgram, "light.diffuse", vec3half);
 	uniformVec3(cubeProgram, "light.specular", lightColour);
 	
-	vec3 specular = { 0.5f, 0.5f, 0.5f };
-	uniformVec3(cubeProgram, "material.specular", specular);
+	uniformInt(cubeProgram, "material.diffuse", 0);
+	uniformVec3(cubeProgram, "material.specular", vec3half);
 	uniformFloat(cubeProgram, "material.shininess", 32.0f);
 
 	uniformVec3(lightProgram, "lightColour", lightColour);
@@ -81,8 +90,8 @@ void update(void) {
 	double sinTime = sin(glfwGetTime());
 
 	vec3 vec3tenth = { 0.1f, 0.1f, 0.1f };
-	vec3 lightPos = { cosTime, sinTime, cosTime * sinTime };
-	glm_vec3_copy(lightPos, rotate);
+	vec3 lightPos = { cosTime, sinTime, cosTime };
+	//glm_vec3_copy(lightPos, rotate);
 
 	mat4 model = GLM_MAT4_IDENTITY_INIT;
 	glm_translate(model, lightPos);
@@ -111,14 +120,14 @@ void draw(void) {
 	glBindVertexArray(cubeVAO);
 	glUseProgram(cubeProgram);
 
-	for (int i = 0; i < 27; i++) {
-		vec4 rot;
-		glm_vec4(rotate, 1.0f, rot);
-		glm_vec4_negate(rot);
+	for (int i = 0; i < 10; i++) {
+		//vec4 rot;
+		//glm_vec4(rotate, 1.0f, rot);
+		//glm_vec4_negate(rot);
 		mat4 model = GLM_MAT4_IDENTITY_INIT;
 
-		glm_scale(model, vec3third);
-		glm_rotate(model, glfwGetTime(), rot);
+		//glm_scale(model, vec3third);
+		//glm_rotate(model, glfwGetTime(), rot);
 		glm_translate(model, cubePos[i]);
 
 		uniformMat4(cubeProgram, "model", model);

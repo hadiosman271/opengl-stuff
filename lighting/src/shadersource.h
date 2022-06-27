@@ -5,12 +5,12 @@ struct shaderInfo cubeShaders[SHADERCOUNT] = {
 		"#version 330 core\n"
 
 		"layout (location = 0) in vec3 aPos;"
-		"layout (location = 1) in vec3 aColour;"
-		"layout (location = 2) in vec3 aNormal;"
+		"layout (location = 1) in vec3 aNormal;"
+		"layout (location = 2) in vec2 aTexCoord;"
 		
 		"out vec3 fragPos;"
-		"out vec3 colour;"
 		"out vec3 normal;"
+		"out vec2 texCoord;"
 		
 		"uniform mat4 model;"
 		"uniform mat4 view;"
@@ -19,8 +19,8 @@ struct shaderInfo cubeShaders[SHADERCOUNT] = {
 		"void main() {"
 			"gl_Position = proj * view * model * vec4(aPos, 1.0);"
 			"fragPos = vec3(model * vec4(aPos, 1.0));"
-			"colour = aColour;"
 			"normal = aNormal;"
+			"texCoord = aTexCoord;"
 		"}"
 	},
 	[1] = {
@@ -28,7 +28,14 @@ struct shaderInfo cubeShaders[SHADERCOUNT] = {
 	.source =
 		"#version 330 core\n"
 
+		"in vec3 fragPos;"
+		"in vec3 normal;"
+		"in vec2 texCoord;"
+		
+		"out vec4 fragColour;"
+
 		"struct Material {"
+			"sampler2D diffuse;"
 			"vec3 specular;"
 			"float shininess;"
 		"};"
@@ -40,17 +47,13 @@ struct shaderInfo cubeShaders[SHADERCOUNT] = {
 			"vec3 pos;"
 		"};"
 		
-		"in vec3 fragPos;"
-		"in vec3 colour;"
-		"in vec3 normal;"
-		
-		"out vec4 fragColour;"
-		
 		"uniform vec3 viewPos;"
 		"uniform Material material;"
 		"uniform Light light;"
 		
 		"void main() {"
+			"vec3 colour = vec3(texture(material.diffuse, texCoord));"
+
 			"vec3 ambient = light.ambient * colour;"
 			
 			"vec3 lightDir = normalize(light.pos - fragPos);"
