@@ -89,20 +89,20 @@ void update(void) {
 	glm_scale(model, vec3tenth);
 
 	mat4 view, proj;
-	glm_perspective(cam.zoom, SCR_WIDTH / SCR_HEIGHT, 0.01f, 100.0f, proj);
-
 	vec3 vecSum;
 	glm_vec3_add(cam.pos, cam.front, vecSum);
 	glm_lookat(cam.pos, vecSum, cam.up, view);
 
-	uniformMat4(cubeProgram, "proj", proj);
+	glm_perspective(cam.zoom, SCR_WIDTH / SCR_HEIGHT, 0.01f, 100.0f, proj);
+
 	uniformMat4(cubeProgram, "view", view);
+	uniformMat4(cubeProgram, "proj", proj);
 	uniformVec3(cubeProgram, "viewPos", cam.pos);
 	uniformVec3(cubeProgram, "light.pos", lightPos);
 
 	uniformMat4(lightProgram, "model", model);
-	uniformMat4(lightProgram, "proj", proj);
 	uniformMat4(lightProgram, "view", view);
+	uniformMat4(lightProgram, "proj", proj);
 }
 
 void draw(void) {
@@ -116,9 +116,11 @@ void draw(void) {
 		glm_vec4(rotate, 1.0f, rot);
 		glm_vec4_negate(rot);
 		mat4 model = GLM_MAT4_IDENTITY_INIT;
+
 		glm_scale(model, vec3third);
 		glm_rotate(model, glfwGetTime(), rot);
 		glm_translate(model, cubePos[i]);
+
 		uniformMat4(cubeProgram, "model", model);
 
 		glDrawArrays(GL_TRIANGLES, 0, verts);
