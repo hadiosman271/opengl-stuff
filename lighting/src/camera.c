@@ -2,10 +2,10 @@
 
 struct camera cam = {
 	.speed = 2.5f,
-	.pitch = -22.0f, .yaw = 115.0f,
+	.pitch = -28.5f, .yaw = 232.0f,
 	.zoom = 45.0f,
 	.sensitivity = 0.1f,
-	.pos = { 1.3f, 1.0f, -2.0f },
+	.pos = { 1.5f, 1.3f, 2.0f },
 	.up = { 0.0f, 1.0f, 0.0f }
 };
 

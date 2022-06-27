@@ -7,8 +7,11 @@
 unsigned verts;
 unsigned VBO, cubeVAO, lightVAO;
 unsigned cubeProgram, lightProgram;
+
 vec3 *cubePos;
+vec3 rotate;
 vec3 vec3third = { 0.333, 0.333, 0.333 };
+
 extern struct camera cam;
 extern unsigned SCR_WIDTH, SCR_HEIGHT;
 
@@ -52,24 +55,17 @@ void setup(void) {
 	cubeProgram = createShaderProgram(cubeShaders, SHADERCOUNT);
 	lightProgram = createShaderProgram(lightShaders, SHADERCOUNT);
 
-	vec3 vec3fifth = { 0.2f, 0.2f, 0.2f };
-	vec3 lightPos = { 1.2f, 1.0f, 2.0f };
-	mat4 lightModel = GLM_MAT4_IDENTITY_INIT;
-	glm_translate(lightModel, lightPos);
-	glm_scale(lightModel, vec3fifth);
-
+	vec3 lightAmbient = { 0.2f, 0.2f, 0.2f };
 	vec3 lightDiffuse = { 0.5f, 0.5f, 0.5f };
 	vec3 lightColour = { 1.0f, 1.0f, 1.0f };
-	uniformVec3(cubeProgram, "light.ambient", vec3fifth);
+	uniformVec3(cubeProgram, "light.ambient", lightAmbient);
 	uniformVec3(cubeProgram, "light.diffuse", lightDiffuse);
 	uniformVec3(cubeProgram, "light.specular", lightColour);
-	uniformVec3(cubeProgram, "light.pos", lightPos);
 	
-	vec3 mSpecular = { 0.5f, 0.5f, 0.5f };
-	uniformVec3(cubeProgram, "material.specular", mSpecular);
+	vec3 specular = { 0.5f, 0.5f, 0.5f };
+	uniformVec3(cubeProgram, "material.specular", specular);
 	uniformFloat(cubeProgram, "material.shininess", 32.0f);
 
-	uniformMat4(lightProgram, "model", lightModel);
 	uniformVec3(lightProgram, "lightColour", lightColour);
 
 	updateCamera(0, 0);
@@ -81,6 +77,17 @@ void setup(void) {
 void update(void) {
 	processInput();
 
+	double cosTime = cos(glfwGetTime());
+	double sinTime = sin(glfwGetTime());
+
+	vec3 vec3tenth = { 0.1f, 0.1f, 0.1f };
+	vec3 lightPos = { cosTime, sinTime, cosTime * sinTime };
+	glm_vec3_copy(lightPos, rotate);
+
+	mat4 model = GLM_MAT4_IDENTITY_INIT;
+	glm_translate(model, lightPos);
+	glm_scale(model, vec3tenth);
+
 	mat4 view, proj;
 	glm_perspective(cam.zoom, SCR_WIDTH / SCR_HEIGHT, 0.01f, 100.0f, proj);
 
@@ -91,7 +98,9 @@ void update(void) {
 	uniformMat4(cubeProgram, "proj", proj);
 	uniformMat4(cubeProgram, "view", view);
 	uniformVec3(cubeProgram, "viewPos", cam.pos);
+	uniformVec3(cubeProgram, "light.pos", lightPos);
 
+	uniformMat4(lightProgram, "model", model);
 	uniformMat4(lightProgram, "proj", proj);
 	uniformMat4(lightProgram, "view", view);
 }
@@ -103,8 +112,12 @@ void draw(void) {
 	glUseProgram(cubeProgram);
 
 	for (int i = 0; i < 27; i++) {
+		vec4 rot;
+		glm_vec4(rotate, 1.0f, rot);
+		glm_vec4_negate(rot);
 		mat4 model = GLM_MAT4_IDENTITY_INIT;
 		glm_scale(model, vec3third);
+		glm_rotate(model, glfwGetTime(), rot);
 		glm_translate(model, cubePos[i]);
 		uniformMat4(cubeProgram, "model", model);
 
@@ -119,6 +132,8 @@ void draw(void) {
 
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
+
+//extern GLFWwindow *window;
 
 void processInput(void) {	
 	float currentFrame = glfwGetTime();
@@ -136,6 +151,10 @@ void processInput(void) {
 		glm_vec3_muladds(cam.left, speed, cam.pos);
 	if (input(right))
 		glm_vec3_muladds(cam.right, speed, cam.pos);
+
+//	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+//		printf("pos = (%f, %f, %f), pitch = %f, yaw = %f",
+//			cam.pos[X], cam.pos[Y], cam.pos[Z], cam.pitch, cam.yaw);
 
 	// zooming
 	if (input(zoom_in))
