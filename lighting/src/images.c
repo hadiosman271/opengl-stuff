@@ -8,12 +8,15 @@
 void setIcon(void) {
 	extern GLFWwindow *window;
 
-	GLFWimage *image = NULL;
-		image->width = 64;
-		image->height = 64;
-		image->pixels = icon;
+	GLFWimage image[1] = {
+		[0] = {
+			.width = 64,
+			.height = 64,
+			.pixels = icon
+		}
+	};
 
-	glfwSetWindowIcon(window, 1, (const GLFWimage *) image);
+	glfwSetWindowIcon(window, 1, image);
 }
 
 void loadTexture(void) {

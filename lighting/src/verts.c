@@ -35,27 +35,23 @@ float *box(unsigned *size) {
 	vec2 tex[4] = {
 		{ 1.0f, 1.0f },
 		{ 0.0f, 1.0f },
-		{ 0.1f, 0.0f },
-		{ 0.0f, 0.0f }
+		{ 0.0f, 0.0f },
+		{ 1.0f, 0.0f }
 	};
 
-	int index[2][6] = {
-		{ 0, 3, 2, 0, 1, 2 },
-		{ 0, 2, 3, 0, 1, 3 }
-	};
-
+	int index[6] = { 0, 3, 2, 0, 1, 2 };
 	int v = 0;
 	for (int i = 0, one = 1; i < 6; i++) {
 		// finding normal vector
 		vec3 normal, sub1, sub2;
-		glm_vec3_sub(pt[index[0][0]], pt[index[0][1]], sub1);
-		glm_vec3_sub(pt[index[0][2]], pt[index[0][1]], sub2);
+		glm_vec3_sub(pt[index[0]], pt[index[1]], sub1);
+		glm_vec3_sub(pt[index[2]], pt[index[1]], sub2);
 		glm_vec3_crossn(sub1, sub2, normal);
 
 		for (int j = 0; j < 6; j++, v++) {	// copy and basement
-			glm_vec3_copy(pt[index[0][j]], &vert[v * 8]);
+			glm_vec3_copy(pt[index[j]], &vert[v * 8]);
 			glm_vec3_copy(normal, &vert[v * 8 + 3]);
-			glm_vec2_copy(tex[index[1][j]], &vert[v * 8 + 6]);
+			glm_vec2_copy(tex[index[j]], &vert[v * 8 + 6]);
 		}
 		
 		i % 3 ? one *= -1 : 0;

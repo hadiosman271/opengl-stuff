@@ -118,17 +118,18 @@ void draw(void) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glBindVertexArray(cubeVAO);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, texture);
 	glUseProgram(cubeProgram);
 
 	for (int i = 0; i < 10; i++) {
-		//vec4 rot;
-		//glm_vec4(rotate, 1.0f, rot);
-		//glm_vec4_negate(rot);
+		vec4 rot;
+		glm_vec4(cubePos[i], 1.0f, rot);
 		mat4 model = GLM_MAT4_IDENTITY_INIT;
 
 		//glm_scale(model, vec3third);
-		//glm_rotate(model, glfwGetTime(), rot);
 		glm_translate(model, cubePos[i]);
+		glm_rotate(model, glfwGetTime(), rot);
 
 		uniformMat4(cubeProgram, "model", model);
 
