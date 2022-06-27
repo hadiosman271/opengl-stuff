@@ -4,7 +4,7 @@ lighting.exe: ./.o/main.o ./.o/render.o ./.o/shader.o ./.o/camera.o ./.o/verts.o
 ./.o/main.o: ./src/main.c ./src/render.h ./src/camera.h | ./.o
 	powershell gcc -Wall -o ./.o/main.o -c ./src/main.c -I./libs/include
 
-./.o/render.o: ./src/render.c ./src/images.h ./src/shader.h ./src/shadersource.h ./src/camera.h ./src/verts.h | ./.o
+./.o/render.o: ./src/render.c ./src/images.h ./src/shader.h ./src/shader_src.h ./src/camera.h ./src/verts.h | ./.o
 	powershell gcc -Wall -o ./.o/render.o -c ./src/render.c -I./libs/include
 
 ./.o/shader.o: ./src/shader.c ./src/shader.h | ./.o

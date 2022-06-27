@@ -1,7 +1,7 @@
 #include "render.h"
 #include "images.h"
 #include "shader.h"
-#include "shadersource.h"
+#include "shader_src.h"
 #include "camera.h"
 #include "verts.h"
 
