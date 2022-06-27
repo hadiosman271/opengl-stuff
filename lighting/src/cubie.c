@@ -29,12 +29,12 @@ float *cubie(unsigned *size) {
 	}
 
 	vec3 colour[7] = {
-		{ 0.0f, 0.3f, 0.7f },	// blue
-		{ 1.0f, 0.8f, 0.0f },	// yellow
-		{ 0.8f, 0.0f, 0.0f },	// red
-		{ 0.0f, 0.6f, 0.3f },	// green
-		{ 1.0f, 1.0f, 1.0f },	// white
 		{ 1.0f, 0.3f, 0.0f },	// orange
+		{ 1.0f, 0.8f, 0.0f },	// yellow
+		{ 0.0f, 0.3f, 0.7f },	// blue
+		{ 0.8f, 0.0f, 0.0f },	// red
+		{ 1.0f, 1.0f, 1.0f },	// white
+		{ 0.0f, 0.6f, 0.3f },	// green
 		{ 0.2f, 0.2f, 0.2f }	// grey
 	};
 
