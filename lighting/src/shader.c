@@ -20,9 +20,8 @@ unsigned createShaderProgram(Shader shaders[], unsigned count) {
 		fseek(file, 0, SEEK_END);
 		int len = ftell(file);
 		fseek(file, 0, SEEK_SET);
-		char *source = malloc(len);
+		char *source = calloc(1, len + 1);
 		fread(source, 1, len, file);
-		source[len] = '\0';
 		fclose(file);
 
 		unsigned shader = glCreateShader(shaders[i].type);

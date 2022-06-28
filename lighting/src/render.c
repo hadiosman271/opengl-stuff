@@ -96,9 +96,9 @@ void update(void) {
 	float time = glfwGetTime();
 
 	vec3 lightPos = {
-		cos(time) * 3.0f - 1.0f,
-		sin(time) * 3.0f + 1.5f,
-		sin(time * 0.5f) * 6.0f + 7.0f
+		cos(time) - 1.0f,
+		sin(time) + 1.5f,
+		-sin(time * 0.5f) * 5.0f - 4.0f
 	};
 
 	mat4 model = GLM_MAT4_IDENTITY_INIT;
@@ -168,9 +168,9 @@ void processInput(void) {
 	if (input(right))
 		glm_vec3_muladds(cam.right, speed, cam.pos);
 
-//	if (input(record))
-//		printf("pos = (%f, %f, %f)\npitch = %f, yaw = %f\n",
-//			cam.pos[X], cam.pos[Y], cam.pos[Z], cam.pitch, cam.yaw);
+	if (input(record))
+		printf("pos = (%f, %f, %f)\npitch = %f, yaw = %f\n",
+			cam.pos[X], cam.pos[Y], cam.pos[Z], cam.pitch, cam.yaw);
 
 	// zooming
 	if (input(zoom_in))

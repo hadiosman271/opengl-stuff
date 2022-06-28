@@ -27,7 +27,7 @@ void main() {
 	vec3 mDiffuse = vec3(texture(material.diffuse, texCoord));
 	vec3 mSpecular = vec3(texture(material.specular, texCoord));
 
-	vec3 ambient = light.ambient * colour;
+	vec3 ambient = light.ambient * mDiffuse;
 
 	vec3 lightDir = normalize(light.pos - fragPos);
 	vec3 norm = normalize(normal);
