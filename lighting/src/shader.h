@@ -3,13 +3,12 @@
 
 #include "common.h"
 
-enum { SHADERCOUNT = 2 };
-struct shaderInfo {
+typedef struct shader {
+	const char *path;
 	unsigned type;
-	const char *source;
-};
+} Shader;
 
-unsigned createShaderProgram(struct shaderInfo shaders[], unsigned count);
+unsigned createShaderProgram(Shader shaders[], unsigned count);
 void uniformInt(unsigned program, const char *name, int value);
 void uniformFloat(unsigned program, const char *name, float value);
 void uniformMat4(unsigned program, const char *name, mat4 mat);

@@ -10,7 +10,6 @@ void setup(void);
 void update(void);
 void draw(void);
 int input(int key);
-float getTime(void);
 void processInput(void);
 void cleanup(void);
 
@@ -21,7 +20,8 @@ enum {
 	right = GLFW_KEY_D,
 	zoom_in = GLFW_KEY_KP_ADD,
 	zoom_out = GLFW_KEY_KP_SUBTRACT,
-	zoom_reset = GLFW_KEY_KP_ENTER
+	zoom_reset = GLFW_KEY_KP_ENTER,
+	record = GLFW_KEY_Q
 };
 
 #endif

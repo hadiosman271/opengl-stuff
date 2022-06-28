@@ -1,9 +1,8 @@
 #include "render.h"
-#include "images.h"
-#include "shader.h"
-#include "shader_src.h"
-#include "camera.h"
 #include "verts.h"
+#include "shader.h"
+#include "texture.h"
+#include "camera.h"
 
 extern vec3 cubePos[];
 extern struct camera cam;
@@ -18,8 +17,6 @@ vec3 vec3half  = { 0.5f, 0.5f, 0.5f };
 vec3 vec3one   = { 1.0f, 1.0f, 1.0f };
 
 void setup(void) {
-	setIcon();
-
 	glGenVertexArrays(1, &cubeVAO);
 	glGenBuffers(1, &VBO);
 
@@ -54,26 +51,41 @@ void setup(void) {
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,
 		8 * sizeof(float), (void *) 0);
+	
+	Shader cubeShaders[2] = {
+		{ .path = "assets/cube_vert.glsl", .type = GL_VERTEX_SHADER },
+		{ .path = "assets/cube_frag.glsl", .type = GL_FRAGMENT_SHADER }
+	};
+	Shader lightShaders[2] = {
+		{ .path = "assets/light_vert.glsl", .type = GL_VERTEX_SHADER },
+		{ .path = "assets/light_frag.glsl", .type = GL_FRAGMENT_SHADER }
 
-	cubeProgram = createShaderProgram(cubeShaders, SHADERCOUNT);
-	lightProgram = createShaderProgram(lightShaders, SHADERCOUNT);
+	};
+	cubeProgram = createShaderProgram(cubeShaders, 2);
+	lightProgram = createShaderProgram(lightShaders, 2);
 
-	glGenTextures(1, &texture);
+	Image images[2] = {
+		{ .path = "assets/diffuse.png", .format = GL_RGBA },
+		{ .path = "assets/specular.png", .format = GL_RGBA }
+	};
+	unsigned *texture = createTextures(images, 2);
+
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, texture);
-	loadTexture();
+	glBindTexture(GL_TEXTURE_2D, texture[0]);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, texture[1]);
 
 	uniformVec3(cubeProgram, "light.ambient", vec3fifth);
 	uniformVec3(cubeProgram, "light.diffuse", vec3half);
 	uniformVec3(cubeProgram, "light.specular", vec3one);
 	
 	uniformInt(cubeProgram, "material.diffuse", 0); // texture 0
-	uniformVec3(cubeProgram, "material.specular", vec3half);
+	uniformInt(cubeProgram, "material.specular", 1); // texture 1
 	uniformFloat(cubeProgram, "material.shininess", 32.0f);
 
 	uniformVec3(lightProgram, "lightColour", vec3one);
 
-	updateCamera(0, 0);
+	updateCamera(0, 0);	
 
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 	glEnable(GL_DEPTH_TEST);
@@ -94,10 +106,10 @@ void update(void) {
 	glm_translate(model, lightPos);
 	glm_scale(model, vec3fifth);
 
-	mat4 view, proj;
 	vec3 vecSum;
 	glm_vec3_add(cam.pos, cam.front, vecSum);
 
+	mat4 view, proj;
 	glm_lookat(cam.pos, vecSum, cam.up, view);
 	glm_perspective(cam.zoom, SCR_WIDTH / SCR_HEIGHT,
 			0.01f, 100.0f, proj);
@@ -115,10 +127,8 @@ void update(void) {
 void draw(void) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	glBindVertexArray(cubeVAO);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, texture);
-	glUseProgram(cubeProgram);
+	glBindVertexArray(cubeVAO);	
+	glUseProgram(cubeProgram);	
 
 	for (int i = 0; i < 10; i++) {
 		vec4 rot;
@@ -142,8 +152,6 @@ void draw(void) {
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
-//extern GLFWwindow *window;
-
 void processInput(void) {	
 	float currentFrame = glfwGetTime();
 	deltaTime = currentFrame - lastFrame;
@@ -161,7 +169,7 @@ void processInput(void) {
 	if (input(right))
 		glm_vec3_muladds(cam.right, speed, cam.pos);
 
-//	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+//	if (input(record))
 //		printf("pos = (%f, %f, %f)\npitch = %f, yaw = %f\n",
 //			cam.pos[X], cam.pos[Y], cam.pos[Z], cam.pitch, cam.yaw);
 
@@ -183,4 +191,5 @@ void cleanup(void) {
 	glDeleteVertexArrays(1, &cubeVAO);
 	glDeleteVertexArrays(1, &lightVAO);
 	glDeleteBuffers(1, &VBO);
+	glDeleteTextures(2, &texture);
 }

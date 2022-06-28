@@ -1,6 +1,9 @@
 #include "shader.h"
 
-unsigned createShaderProgram(struct shaderInfo shaders[], unsigned count) {
+unsigned createShaderProgram(Shader shaders[], unsigned count) {
+	if (count < 1 || count > 6)
+		return 0;
+
 	unsigned program = glCreateProgram();
 	unsigned *shaderBuf = malloc(sizeof(unsigned [count]));
 	
@@ -8,9 +11,22 @@ unsigned createShaderProgram(struct shaderInfo shaders[], unsigned count) {
 	char infoLog[512];
 	
 	for (int i = 0; i < count; i++) {
+		FILE *file = fopen(shaders[i].path, "rb");
+		if (!file) {
+			fprintf(stderr, "Error loading shader at %s\n", shaders[i].path);
+			continue;
+		}
+
+		fseek(file, 0, SEEK_END);
+		int len = ftell(file);
+		fseek(file, 0, SEEK_SET);
+		char *source = malloc(len);
+		fread(source, 1, len, file);
+		fclose(file);
+
 		unsigned shader = glCreateShader(shaders[i].type);
 		shaderBuf[i] = shader;
-		glShaderSource(shader, 1, &shaders[i].source, NULL);
+		glShaderSource(shader, 1, (const char * const *) &source, NULL);
 		glCompileShader(shader);
 	
 		glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
