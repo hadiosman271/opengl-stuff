@@ -22,6 +22,7 @@ unsigned createShaderProgram(Shader shaders[], unsigned count) {
 		fseek(file, 0, SEEK_SET);
 		char *source = malloc(len);
 		fread(source, 1, len, file);
+		source[len] = '\0';
 		fclose(file);
 
 		unsigned shader = glCreateShader(shaders[i].type);
@@ -32,7 +33,8 @@ unsigned createShaderProgram(Shader shaders[], unsigned count) {
 		glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
 		if (!success) {
 			glGetShaderInfoLog(shader, 512, NULL, infoLog);
-			fprintf(stderr, "error: shader compilation failed:\n%s", infoLog);
+			fprintf(stderr, "Error compiling shader at %s:\n%s",
+					shaders[i].path, infoLog);
 		} else
 			glAttachShader(program, shader);
 	}
@@ -41,7 +43,7 @@ unsigned createShaderProgram(Shader shaders[], unsigned count) {
 	glGetProgramiv(program, GL_LINK_STATUS, &success);
 	if (!success) {
 		glGetProgramInfoLog(program, 512, NULL, infoLog);
-		fprintf(stderr, "error: shader program linking failed:\n%s", infoLog);
+		fprintf(stderr, "Error linking shader program:\n%s", infoLog);
 	}
 	
 	for (int i = 0; i < count; i++)
