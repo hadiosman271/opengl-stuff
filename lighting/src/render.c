@@ -5,17 +5,17 @@
 #include "camera.h"
 #include "verts.h"
 
-unsigned verts;
-unsigned VBO, cubeVAO, lightVAO;
+extern vec3 cubePos[];
+extern struct camera cam;
+extern unsigned SCR_WIDTH, SCR_HEIGHT;
+
+unsigned verts, VBO, cubeVAO, lightVAO;
 unsigned cubeProgram, lightProgram;
 unsigned texture;
 
-extern vec3 cubePos[];
-//vec3 rotate;
-//vec3 vec3third = { 0.333, 0.333, 0.333 };
-
-extern struct camera cam;
-extern unsigned SCR_WIDTH, SCR_HEIGHT;
+vec3 vec3fifth = { 0.2f, 0.2f, 0.2f };
+vec3 vec3half  = { 0.5f, 0.5f, 0.5f };
+vec3 vec3one   = { 1.0f, 1.0f, 1.0f };
 
 void setup(void) {
 	setIcon();
@@ -26,7 +26,6 @@ void setup(void) {
 	unsigned size;
 	float *cube = box(&size);
 	verts = size / (8 * sizeof(float));
-	//cubePos = rubiksPos(cube[Z] * 2);
 
 	glBindVertexArray(cubeVAO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
@@ -64,18 +63,15 @@ void setup(void) {
 	glBindTexture(GL_TEXTURE_2D, texture);
 	loadTexture();
 
-	vec3 lightAmbient = { 0.2f, 0.2f, 0.2f };
-	vec3 vec3half = { 0.5f, 0.5f, 0.5f };
-	vec3 lightColour = { 1.0f, 1.0f, 1.0f };
-	uniformVec3(cubeProgram, "light.ambient", lightAmbient);
+	uniformVec3(cubeProgram, "light.ambient", vec3fifth);
 	uniformVec3(cubeProgram, "light.diffuse", vec3half);
-	uniformVec3(cubeProgram, "light.specular", lightColour);
+	uniformVec3(cubeProgram, "light.specular", vec3one);
 	
-	uniformInt(cubeProgram, "material.diffuse", 0);
+	uniformInt(cubeProgram, "material.diffuse", 0); // texture 0
 	uniformVec3(cubeProgram, "material.specular", vec3half);
 	uniformFloat(cubeProgram, "material.shininess", 32.0f);
 
-	uniformVec3(lightProgram, "lightColour", lightColour);
+	uniformVec3(lightProgram, "lightColour", vec3one);
 
 	updateCamera(0, 0);
 
@@ -85,24 +81,26 @@ void setup(void) {
 
 void update(void) {
 	processInput();
+	
+	float time = glfwGetTime();
 
-	double cosTime = cos(glfwGetTime());
-	double sinTime = sin(glfwGetTime());
-
-	vec3 vec3tenth = { 0.1f, 0.1f, 0.1f };
-	vec3 lightPos = { cosTime, sinTime, cosTime };
-	//glm_vec3_copy(lightPos, rotate);
+	vec3 lightPos = {
+		cos(time) * 3.0f - 1.0f,
+		sin(time) * 3.0f + 1.5f,
+		sin(time * 0.5f) * 6.0f + 7.0f
+	};
 
 	mat4 model = GLM_MAT4_IDENTITY_INIT;
 	glm_translate(model, lightPos);
-	glm_scale(model, vec3tenth);
+	glm_scale(model, vec3fifth);
 
 	mat4 view, proj;
 	vec3 vecSum;
 	glm_vec3_add(cam.pos, cam.front, vecSum);
-	glm_lookat(cam.pos, vecSum, cam.up, view);
 
-	glm_perspective(cam.zoom, SCR_WIDTH / SCR_HEIGHT, 0.01f, 100.0f, proj);
+	glm_lookat(cam.pos, vecSum, cam.up, view);
+	glm_perspective(cam.zoom, SCR_WIDTH / SCR_HEIGHT,
+			0.01f, 100.0f, proj);
 
 	uniformMat4(cubeProgram, "view", view);
 	uniformMat4(cubeProgram, "proj", proj);
@@ -127,7 +125,6 @@ void draw(void) {
 		glm_vec4(cubePos[i], 1.0f, rot);
 		mat4 model = GLM_MAT4_IDENTITY_INIT;
 
-		//glm_scale(model, vec3third);
 		glm_translate(model, cubePos[i]);
 		glm_rotate(model, glfwGetTime(), rot);
 
@@ -165,7 +162,7 @@ void processInput(void) {
 		glm_vec3_muladds(cam.right, speed, cam.pos);
 
 //	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
-//		printf("pos = (%f, %f, %f), pitch = %f, yaw = %f",
+//		printf("pos = (%f, %f, %f)\npitch = %f, yaw = %f\n",
 //			cam.pos[X], cam.pos[Y], cam.pos[Z], cam.pitch, cam.yaw);
 
 	// zooming
