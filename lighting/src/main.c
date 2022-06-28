@@ -1,5 +1,8 @@
 #include <string.h>
 
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
+
 #include "render.h"
 #include "camera.h"
 
@@ -37,36 +40,6 @@ void scroll_callback(GLFWwindow *window, double xOffset, double yOffset) {
 	zoom(yOffset);
 }
 
-GLenum glCheckError_(const char *file, int line) {
-	GLenum code;
-	char message[30];
-
-	while ((code = glGetError()) != GL_NO_ERROR) {
-		switch (code) {
-		case GL_INVALID_ENUM:
-			strcpy(message, "INVALID_ENUM");
-			break;
-		case GL_INVALID_VALUE:
-			strcpy(message, "INVALID_VALUE");
-			break;
-		case GL_INVALID_OPERATION:
-			strcpy(message, "INVALID_OPERATION");
-			break;
-		case GL_OUT_OF_MEMORY:
-			strcpy(message, "OUT_OF_MEMORY");
-			break;
-		case GL_INVALID_FRAMEBUFFER_OPERATION:
-			strcpy(message, "INVALID_FRAMEBUFFER_OPERATION");
-			break;
-		}
-		
-		fprintf(stderr, "%s | %s (line %d)\n",
-			message, file, line);
-	}
-	
-	return code;
-}
-
 GLFWwindow *window;
 
 int input(int key) {
@@ -97,6 +70,12 @@ int main(void) {
 		glfwTerminate();
 		exit(EXIT_FAILURE);
 	}
+
+	GLFWimage icon[1];
+	icon[0].pixels = stbi_load("assets/icon.png",
+			&icon[0].width, &icon[0].height, 0, 4);
+	glfwSetWindowIcon(window, 1, icon);
+	stb_image_free(icon[0].pixels);
 	
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 	glfwSetCursorPosCallback(window, cursor_callback);
@@ -121,4 +100,34 @@ int main(void) {
 
 	glfwTerminate();
 	exit(EXIT_SUCCESS);
+}
+
+GLenum glCheckError_(const char *file, int line) {
+	GLenum code;
+	char message[30];
+
+	while ((code = glGetError()) != GL_NO_ERROR) {
+		switch (code) {
+		case GL_INVALID_ENUM:
+			strcpy(message, "INVALID_ENUM");
+			break;
+		case GL_INVALID_VALUE:
+			strcpy(message, "INVALID_VALUE");
+			break;
+		case GL_INVALID_OPERATION:
+			strcpy(message, "INVALID_OPERATION");
+			break;
+		case GL_OUT_OF_MEMORY:
+			strcpy(message, "OUT_OF_MEMORY");
+			break;
+		case GL_INVALID_FRAMEBUFFER_OPERATION:
+			strcpy(message, "INVALID_FRAMEBUFFER_OPERATION");
+			break;
+		}
+		
+		fprintf(stderr, "%s | %s (line %d)\n",
+			message, file, line);
+	}
+	
+	return code;
 }
