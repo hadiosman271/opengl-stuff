@@ -96,9 +96,9 @@ void update(void) {
 	float time = glfwGetTime();
 
 	vec3 lightPos = {
-		cos(time) - 1.0f,
+		-cos(time) - 1.0f,
 		sin(time) + 1.5f,
-		-sin(time * 0.5f) * 5.0f - 4.0f
+		cos(time * 0.5f) * 5.0f - 4.0f
 	};
 
 	mat4 model = GLM_MAT4_IDENTITY_INIT;
