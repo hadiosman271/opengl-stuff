@@ -59,7 +59,6 @@ void setup(void) {
 	Shader lightShaders[2] = {
 		{ .path = "assets/light_vert.glsl", .type = GL_VERTEX_SHADER },
 		{ .path = "assets/light_frag.glsl", .type = GL_FRAGMENT_SHADER }
-
 	};
 	cubeProgram = createShaderProgram(cubeShaders, 2);
 	lightProgram = createShaderProgram(lightShaders, 2);
