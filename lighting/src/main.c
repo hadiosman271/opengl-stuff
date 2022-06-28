@@ -75,7 +75,7 @@ int main(void) {
 	icon[0].pixels = stbi_load("assets/icon.png",
 			&icon[0].width, &icon[0].height, 0, 4);
 	glfwSetWindowIcon(window, 1, icon);
-	stb_image_free(icon[0].pixels);
+	stbi_image_free(icon[0].pixels);
 	
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 	glfwSetCursorPosCallback(window, cursor_callback);
