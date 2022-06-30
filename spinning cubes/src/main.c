@@ -118,21 +118,21 @@ void processInput(GLFWwindow *window) {
 
 	// movement
 	float speed = cam.speed * deltaTime;
-	if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 		glm_vec3_muladds(cam.front, speed, cam.pos);
-	if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
 		glm_vec3_muladds(cam.behind, speed, cam.pos);
-	if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
 		glm_vec3_muladds(cam.left, speed, cam.pos);
-	if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 		glm_vec3_muladds(cam.right, speed, cam.pos);
 
 	// zooming
-	if (glfwGetKey(window, GLFW_KEY_KP_ADD) == GLFW_PRESS)
-		cam.zoom -= speed;
-	if (glfwGetKey(window, GLFW_KEY_KP_SUBTRACT) == GLFW_PRESS)
-		cam.zoom += speed;
-	if (glfwGetKey(window, GLFW_KEY_KP_ENTER) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS)
+		cam.zoom -= speed * 10;
+	if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS)
+		cam.zoom += speed * 10;
+	if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS)
 		cam.zoom = 45.0f;
 		
 	if (cam.zoom > 45.0f)
