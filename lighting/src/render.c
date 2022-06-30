@@ -135,7 +135,7 @@ void draw(void) {
 		mat4 model = GLM_MAT4_IDENTITY_INIT;
 
 		glm_translate(model, cubePos[i]);
-		glm_rotate(model, glfwGetTime(), rot);
+		glm_rotate(model, glfwGetTime() * glm_rad(20.0f * i + 1), rot);
 
 		uniformMat4(cubeProgram, "model", model);
 
@@ -168,9 +168,9 @@ void processInput(void) {
 	if (input(right))
 		glm_vec3_muladds(cam.right, speed, cam.pos);
 
-	if (input(record))
-		printf("pos = (%f, %f, %f)\npitch = %f, yaw = %f\n",
-			cam.pos[X], cam.pos[Y], cam.pos[Z], cam.pitch, cam.yaw);
+//	if (input(record))
+//		printf("pos = (%f, %f, %f)\npitch = %f, yaw = %f\n",
+//			cam.pos[X], cam.pos[Y], cam.pos[Z], cam.pitch, cam.yaw);
 
 	// zooming
 	if (input(zoom_in))
