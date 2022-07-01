@@ -135,7 +135,7 @@ void draw(void) {
 		mat4 model = GLM_MAT4_IDENTITY_INIT;
 
 		glm_translate(model, cubePos[i]);
-		glm_rotate(model, glfwGetTime() * glm_rad(20.0f * i + 1), rot);
+		glm_rotate(model, glfwGetTime(), rot);
 
 		uniformMat4(cubeProgram, "model", model);
 
