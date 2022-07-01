@@ -25,8 +25,8 @@ unsigned *createTextures(Image image[], unsigned count) {
 
 		if (data) {
 			glTexImage2D(GL_TEXTURE_2D,
-						 0, GL_RGB, width, height,
-						 0, image[i].format, GL_UNSIGNED_BYTE, data);
+				0, GL_RGB, width, height,
+				0, image[i].format, GL_UNSIGNED_BYTE, data);
 			glGenerateMipmap(GL_TEXTURE_2D);
 		} else
 			fprintf(stderr, "Error loading texture\n");

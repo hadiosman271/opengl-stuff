@@ -111,7 +111,7 @@ void update(void) {
 	mat4 view, proj;
 	glm_lookat(cam.pos, vecSum, cam.up, view);
 	glm_perspective(cam.zoom, SCR_WIDTH / SCR_HEIGHT,
-			0.01f, 100.0f, proj);
+		0.01f, 100.0f, proj);
 
 	uniformMat4(cubeProgram, "view", view);
 	uniformMat4(cubeProgram, "proj", proj);
@@ -134,8 +134,8 @@ void draw(void) {
 		glm_vec4(cubePos[i], 1.0f, rot);
 		mat4 model = GLM_MAT4_IDENTITY_INIT;
 
-		glm_translate(model, cubePos[i]);
 		glm_rotate(model, glfwGetTime(), rot);
+		glm_translate(model, cubePos[i]);
 
 		uniformMat4(cubeProgram, "model", model);
 
