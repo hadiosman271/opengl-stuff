@@ -53,19 +53,19 @@ void setup(void) {
 		8 * sizeof(float), (void *) 0);
 	
 	Shader cubeShaders[2] = {
-		{ .path = "assets/cube_vert.glsl", .type = GL_VERTEX_SHADER },
-		{ .path = "assets/cube_frag.glsl", .type = GL_FRAGMENT_SHADER }
+		{ .path = "res/cube_vert.glsl", .type = GL_VERTEX_SHADER },
+		{ .path = "res/cube_frag.glsl", .type = GL_FRAGMENT_SHADER }
 	};
 	Shader lightShaders[2] = {
-		{ .path = "assets/light_vert.glsl", .type = GL_VERTEX_SHADER },
-		{ .path = "assets/light_frag.glsl", .type = GL_FRAGMENT_SHADER }
+		{ .path = "res/light_vert.glsl", .type = GL_VERTEX_SHADER },
+		{ .path = "res/light_frag.glsl", .type = GL_FRAGMENT_SHADER }
 	};
 	cubeProgram = createShaderProgram(cubeShaders, 2);
 	lightProgram = createShaderProgram(lightShaders, 2);
 
 	Image images[2] = {
-		{ .path = "assets/diffuse.png", .format = GL_RGBA },
-		{ .path = "assets/specular.png", .format = GL_RGBA }
+		{ .path = "res/diffuse.png", .format = GL_RGBA },
+		{ .path = "res/specular.png", .format = GL_RGBA }
 	};
 	unsigned *texture = createTextures(images, 2);
 
@@ -110,7 +110,7 @@ void update(void) {
 
 	mat4 view, proj;
 	glm_lookat(cam.pos, vecSum, cam.up, view);
-	glm_perspective(cam.zoom, SCR_WIDTH / SCR_HEIGHT,
+	glm_perspective(cam.zoom, (float) SCR_WIDTH / SCR_HEIGHT,
 		0.01f, 100.0f, proj);
 
 	uniformMat4(cubeProgram, "view", view);

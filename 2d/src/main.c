@@ -3,47 +3,25 @@
 #include <stb_image.h>
 
 #include "render.h"
-#include "camera.h"
 
-unsigned SCR_WIDTH = 800;
-unsigned SCR_HEIGHT = 600;
-const char *WIN_NAME = "lighting";
+unsigned scr_width = 800;
+unsigned scr_height = 600;
+const char *win_name = "2d";
 
 void error_callback(int code, const char *description) {
 	fprintf(stderr, "error: %d:%s\n", code, description);
 }
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height) {
-	glViewport(0, 0, width, height);
+	glViewport(0, 0, scr_width = width, scr_height = height);
 }
 
-int firstMouse = 1;
-float lastX, lastY;
-
-void cursor_callback(GLFWwindow *window, double xPos, double yPos) {
-	if (firstMouse) {
-		lastX = xPos;
-		lastY = yPos;
-		firstMouse = 0;
-	}
-
-	float xOffset = xPos - lastX;
-	float yOffset = lastY - yPos;
-	lastX = xPos;
-	lastY = yPos;
-
-	updateCamera(xOffset, yOffset);
-}
-
-void scroll_callback(GLFWwindow *window, double xOffset, double yOffset) {
-	zoom(yOffset);
+void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods) {
+	if (action == GLFW_PRESS)
+		processInput(key);
 }
 
 GLFWwindow *window;
-
-int input(int key) {
-	return glfwGetKey(window, key) == GLFW_PRESS;
-}
 
 int main(void) {
 	glfwSetErrorCallback(error_callback);
@@ -56,7 +34,7 @@ int main(void) {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	
-	window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, WIN_NAME, NULL, NULL);
+	window = glfwCreateWindow(scr_width, scr_height, win_name, NULL, NULL);
 	if (!window) {
 		fprintf(stderr, "error: window creation failed\n");
 		glfwTerminate();
@@ -76,12 +54,10 @@ int main(void) {
 	else
 		fprintf(stderr, "error: failed to load icon\n");
 	stbi_image_free(icon[0].pixels);
-	
+
 	glfwSetWindowPos(window, 150, 300);
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-	glfwSetCursorPosCallback(window, cursor_callback);
-	glfwSetScrollCallback(window, scroll_callback);
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);	
+	glfwSetKeyCallback(window, key_callback);
 	
 	setup();
 
@@ -103,8 +79,8 @@ int main(void) {
 	exit(EXIT_SUCCESS);
 }
 
-GLenum glCheckError_(const char *file, int line) {
-	GLenum code;
+int glCheckError_(const char *file, int line) {
+	int code;
 	char message[30];
 
 	while ((code = glGetError()) != GL_NO_ERROR) {

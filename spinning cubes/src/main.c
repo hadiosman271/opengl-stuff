@@ -41,14 +41,14 @@ int main(void) {
 	glBindVertexArray(0);
 
 	Info shaders[] = {
-		{ .path = "./assets/shaders/vertex.vs", .type = GL_VERTEX_SHADER },
-		{ .path = "./assets/shaders/fragment.fs", .type = GL_FRAGMENT_SHADER }
+		{ .path = "res/shaders/vertex.vs", .type = GL_VERTEX_SHADER },
+		{ .path = "res/shaders/fragment.fs", .type = GL_FRAGMENT_SHADER }
 	};
 	unsigned shaderProgram = createShaderProgram(shaders, 2);
 
 	Info images[] = {
-		{ .path = "assets/img/image0.png", .type = GL_RGBA },
-		{ .path = "assets/img/image1.png", .type = GL_RGBA }
+		{ .path = "res/img/image0.png", .type = GL_RGBA },
+		{ .path = "res/img/image1.png", .type = GL_RGBA }
 	};
 	unsigned *textures = createTextures(images, 2);
 
