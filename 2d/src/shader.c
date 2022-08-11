@@ -5,10 +5,10 @@ unsigned createShaderProgram(Shader shaders[], unsigned count) {
 		return 0;
 
 	unsigned program = glCreateProgram();
-	unsigned *shaderBuf = malloc(sizeof(unsigned [count]));
+	unsigned *shader_buf = malloc(sizeof(unsigned [count]));
 	
 	int success;
-	char infoLog[512];
+	char info_log[512];
 	
 	for (int i = 0; i < count; i++) {
 		FILE *file = fopen(shaders[i].path, "rb");
@@ -26,15 +26,15 @@ unsigned createShaderProgram(Shader shaders[], unsigned count) {
 		fclose(file);
 
 		unsigned shader = glCreateShader(shaders[i].type);
-		shaderBuf[i] = shader;
+		shader_buf[i] = shader;
 		glShaderSource(shader, 1, (const char * const *) &source, NULL);
 		glCompileShader(shader);
 	
 		glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
 		if (!success) {
-			glGetShaderInfoLog(shader, 512, NULL, infoLog);
+			glGetShaderInfoLog(shader, 512, NULL, info_log);
 			fprintf(stderr, "Error compiling shader at %s:\n%s",
-				shaders[i].path, infoLog);
+				shaders[i].path, info_log);
 		} else
 			glAttachShader(program, shader);
 	}
@@ -42,13 +42,13 @@ unsigned createShaderProgram(Shader shaders[], unsigned count) {
 	
 	glGetProgramiv(program, GL_LINK_STATUS, &success);
 	if (!success) {
-		glGetProgramInfoLog(program, 512, NULL, infoLog);
-		fprintf(stderr, "Error linking shader program:\n%s", infoLog);
+		glGetProgramInfoLog(program, 512, NULL, info_log);
+		fprintf(stderr, "Error linking shader program:\n%s", info_log);
 	}
 	
 	for (int i = 0; i < count; i++)
-		glDeleteShader(shaderBuf[i]);
-	free(shaderBuf);
+		glDeleteShader(shader_buf[i]);
+	free(shader_buf);
 	
 	return program;
 }

@@ -14,10 +14,10 @@ void processInput(void);
 void cleanup(void);
 
 enum {
-	forward = GLFW_KEY_UP,
-	backward = GLFW_KEY_DOWN,
-	left = GLFW_KEY_LEFT,
-	right = GLFW_KEY_RIGHT,
+	forward = GLFW_KEY_W,
+	backward = GLFW_KEY_S,
+	left = GLFW_KEY_A,
+	right = GLFW_KEY_D,
 	zoom_in = GLFW_KEY_KP_ADD,
 	zoom_out = GLFW_KEY_KP_SUBTRACT,
 	zoom_reset = GLFW_KEY_KP_ENTER,

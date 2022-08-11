@@ -16,11 +16,6 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height) {
 	glViewport(0, 0, scr_width = width, scr_height = height);
 }
 
-void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods) {
-	if (action == GLFW_PRESS)
-		processInput(key);
-}
-
 GLFWwindow *window;
 
 int main(void) {
@@ -57,8 +52,8 @@ int main(void) {
 
 	glfwSetWindowPos(window, 150, 300);
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-	glfwSetKeyCallback(window, key_callback);
-	
+	glfwSetInputMode(window, GLFW_STICKY_KEYS, GLFW_TRUE);
+
 	setup();
 
 	while (!glfwWindowShouldClose(window)) {

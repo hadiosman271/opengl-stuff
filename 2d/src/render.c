@@ -4,7 +4,7 @@
 
 extern unsigned scr_width, scr_height;
 
-unsigned VBO, VAO, EBO;
+unsigned vbo, vao, ebo;
 unsigned program, *texture;
 
 void setup(void) {
@@ -21,16 +21,16 @@ void setup(void) {
 		0, 3, 2
 	};
 
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-	glGenBuffers(1, &EBO);
+	glGenVertexArrays(1, &vao);
+	glGenBuffers(1, &vbo);
+	glGenBuffers(1, &ebo);
 
-	glBindVertexArray(VAO);
+	glBindVertexArray(vao);
 
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 	
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 	// positions
@@ -70,6 +70,7 @@ void update(void) {
 	float currentFrame = glfwGetTime();
 	deltaTime = currentFrame - lastFrame;
 	lastFrame = currentFrame;
+	processInput();
 
 	mat4 proj;
 	glm_ortho_default((float) scr_width / scr_height, proj);
@@ -82,24 +83,25 @@ void update(void) {
 	uniformMat4(program, "model", model);
 }
 
-void processInput(int key) {
+void processInput(void) {
+	extern GLFWwindow *window;
 	float speed = 2.5f * deltaTime;
 
 	// movement
-	if (key == up)
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 		y += speed;
-	if (key == down)
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
 		y -= speed;
-	if (key == left)
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
 		x -= speed;
-	if (key == right)
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 		x += speed;
 }
 
 void draw(void) {
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	glBindVertexArray(VAO);
+	glBindVertexArray(vao);
 	glUseProgram(program);
 	glBindTexture(GL_TEXTURE_2D, texture[0]);
 
@@ -107,7 +109,7 @@ void draw(void) {
 }
 
 void cleanup(void) {
-	glDeleteVertexArrays(1, &VAO);
-	glDeleteBuffers(1, &VBO);
-	glDeleteBuffers(1, &EBO);
+	glDeleteVertexArrays(1, &vao);
+	glDeleteBuffers(1, &vbo);
+	glDeleteBuffers(1, &ebo);
 }

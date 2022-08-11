@@ -44,6 +44,7 @@ GLFWwindow *initContext(void) {
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwSetCursorPosCallback(window, mouse_callback);
 	glfwSetScrollCallback(window, scroll_callback);
+	glfwSetInputMode(window, GLFW_STICKY_KEYS, GLFW_TRUE);
 	
 	return window;
 }
