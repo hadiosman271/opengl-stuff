@@ -40,7 +40,17 @@ GLFWwindow *initContext(void) {
 		exit(EXIT_FAILURE);
 	}
 	
-	glfwSetWindowPos(window, 150, 300);
+	int count;
+	GLFWmonitor** monitors = glfwGetMonitors(&count);
+	const GLFWvidmode* mode = glfwGetVideoMode(monitors[0]);
+
+	int monitor_x, monitor_y;
+	glfwGetMonitorPos(monitors[0], &monitor_x, &monitor_y);
+
+	glfwSetWindowPos(window,
+		monitor_x + (mode->width - SCR_WIDTH) / 4,
+		monitor_y + (mode->height - SCR_HEIGHT) / 2);
+
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwSetCursorPosCallback(window, mouse_callback);
 	glfwSetScrollCallback(window, scroll_callback);

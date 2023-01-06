@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 
-project(lighting C)
+project(cubes C)
 
 file(GLOB SRC src/*.c src/*.h ../lib/glad/src/glad.c)
 add_executable(${PROJECT_NAME} ${SRC})

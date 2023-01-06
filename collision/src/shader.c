@@ -1,16 +1,26 @@
+#include <glad/glad.h>
+
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "shader.h"
 
-unsigned createShaderProgram(Shader shaders[], unsigned count) {
-	if (count < 1 || count > 6)
-		return 0;
-
+unsigned load_shader(const char *vs_path, const char *fs_path) {
 	unsigned program = glCreateProgram();
-	unsigned *shader_buf = malloc(sizeof(unsigned [count]));
-	
+	unsigned shader_buf[2];
+
+	struct shader {
+		const char *path;
+		unsigned type;
+	} shaders[2] = {
+		vs_path, GL_VERTEX_SHADER,
+		fs_path, GL_FRAGMENT_SHADER
+	};
+
 	int success;
 	char info_log[512];
 	
-	for (int i = 0; i < count; i++) {
+	for (int i = 0; i < 2; i++) {
 		FILE *file = fopen(shaders[i].path, "rb");
 		if (!file) {
 			fprintf(stderr, "Error loading shader at %s\n", shaders[i].path);
@@ -28,6 +38,7 @@ unsigned createShaderProgram(Shader shaders[], unsigned count) {
 		unsigned shader = glCreateShader(shaders[i].type);
 		shader_buf[i] = shader;
 		glShaderSource(shader, 1, (const char * const *) &source, NULL);
+		free(source);
 		glCompileShader(shader);
 	
 		glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
@@ -46,29 +57,19 @@ unsigned createShaderProgram(Shader shaders[], unsigned count) {
 		fprintf(stderr, "Error linking shader program:\n%s", info_log);
 	}
 	
-	for (int i = 0; i < count; i++)
+	for (int i = 0; i < 2; i++)
 		glDeleteShader(shader_buf[i]);
-	free(shader_buf);
 	
 	return program;
+
 }
 
-void uniformInt(unsigned program, const char *name, int value) {
-	glUseProgram(program);
-	glUniform1i(glGetUniformLocation(program, name), value);
-}
-
-void uniformFloat(unsigned program, const char *name, float value) {
-	glUseProgram(program);
-	glUniform1f(glGetUniformLocation(program, name), value);
-}
-
-void uniformMat4(unsigned program, const char *name, mat4 mat) {
+void uniform_mat4(unsigned program, const char *name, mat4 mat) {
 	glUseProgram(program);
 	glUniformMatrix4fv(glGetUniformLocation(program, name), 1, GL_FALSE, &mat[0][0]);
 }
 
-void uniformVec3(unsigned program, const char *name, vec3 vec) {
+void uniform_vec3(unsigned program, const char *name, vec3 vec) {
 	glUseProgram(program);
 	glUniform3fv(glGetUniformLocation(program, name), 1, &vec[0]);
 }

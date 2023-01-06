@@ -77,7 +77,17 @@ int main(void) {
 		fprintf(stderr, "error: failed to load icon\n");
 	stbi_image_free(icon[0].pixels);
 	
-	glfwSetWindowPos(window, 150, 300);
+	int count;
+	GLFWmonitor** monitors = glfwGetMonitors(&count);
+	const GLFWvidmode* mode = glfwGetVideoMode(monitors[0]);
+
+	int monitor_x, monitor_y;
+	glfwGetMonitorPos(monitors[0], &monitor_x, &monitor_y);
+
+	glfwSetWindowPos(window,
+		monitor_x + (mode->width - SCR_WIDTH) / 4,
+		monitor_y + (mode->height - SCR_HEIGHT) / 2);
+
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 	glfwSetCursorPosCallback(window, cursor_callback);
 	glfwSetScrollCallback(window, scroll_callback);
