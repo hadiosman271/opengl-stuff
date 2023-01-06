@@ -40,8 +40,8 @@ void init(State *s) {
 		pos[Y] = s->object[i].size[Y] + rand() % (int) (win_height - 2 * s->object[i].size[Y]);
 		glm_vec2_copy(pos, s->object[i].pos);
 
-		vel[X] = (float) (rand() % 50) / 10;
-		vel[Y] = (float) (rand() % 50) / 10;
+		vel[X] = (float) (rand() % 50) / 100;
+		vel[Y] = (float) (rand() % 50) / 100;
 		glm_vec2_copy(vel, s->object[i].vel);
 
 		colour[R] = (float) (rand() % 255) / 255;
