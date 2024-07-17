@@ -9,7 +9,10 @@ extern struct camera cam;
 extern unsigned SCR_WIDTH, SCR_HEIGHT;
 
 unsigned verts, VBO, cubeVAO, lightVAO;
-unsigned cubeProgram, lightProgram;
+unsigned cubieVerts, cubieVAO, cubieVBO;
+vec3 *cubiePos;
+float cubieSize = 1.1;
+unsigned cubeProgram, cubieProgram, lightProgram;
 unsigned texture;
 
 vec3 vec3fifth = { 0.2f, 0.2f, 0.2f };
@@ -17,6 +20,7 @@ vec3 vec3half  = { 0.5f, 0.5f, 0.5f };
 vec3 vec3one   = { 1.0f, 1.0f, 1.0f };
 
 void setup(void) {
+	// cube
 	glGenVertexArrays(1, &cubeVAO);
 	glGenBuffers(1, &VBO);
 
@@ -42,6 +46,36 @@ void setup(void) {
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE,
 		8 * sizeof(float), (void *) (6 * sizeof(float)));
 
+
+	// cubie
+	glGenVertexArrays(1, &cubieVAO);
+	glGenBuffers(1, &cubieVBO);
+
+	float *cubie = rubiks(&size);
+	cubieVerts = size / (9 * sizeof(float));
+
+	glBindVertexArray(cubieVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, cubieVBO);
+	glBufferData(GL_ARRAY_BUFFER, size, cubie, GL_STATIC_DRAW);
+	free(cubie);
+
+	// positions
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,
+		9 * sizeof(float), (void *) 0);
+	// colors
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE,
+		9 * sizeof(float), (void *) (3 * sizeof(float)));
+	// normals
+	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE,
+		9 * sizeof(float), (void *) (6 * sizeof(float)));
+
+	cubiePos = rubiksPos(cubieSize);
+
+
+	// light
 	glGenVertexArrays(1, &lightVAO);
 
 	glBindVertexArray(lightVAO);
@@ -52,17 +86,26 @@ void setup(void) {
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,
 		8 * sizeof(float), (void *) 0);
 	
+
+	// shaders
 	Shader cubeShaders[2] = {
 		{ .path = "res/cube_vert.glsl", .type = GL_VERTEX_SHADER },
 		{ .path = "res/cube_frag.glsl", .type = GL_FRAGMENT_SHADER }
+	};
+	Shader cubieShaders[2] = {
+		{ .path = "res/cubie_vert.glsl", .type = GL_VERTEX_SHADER },
+		{ .path = "res/cubie_frag.glsl", .type = GL_FRAGMENT_SHADER }
 	};
 	Shader lightShaders[2] = {
 		{ .path = "res/light_vert.glsl", .type = GL_VERTEX_SHADER },
 		{ .path = "res/light_frag.glsl", .type = GL_FRAGMENT_SHADER }
 	};
 	cubeProgram = createShaderProgram(cubeShaders, 2);
+	cubieProgram = createShaderProgram(cubieShaders, 2);
 	lightProgram = createShaderProgram(lightShaders, 2);
 
+
+	// textures
 	Image images[2] = {
 		{ .path = "res/diffuse.png", .format = GL_RGBA },
 		{ .path = "res/specular.png", .format = GL_RGBA }
@@ -74,6 +117,8 @@ void setup(void) {
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, texture[1]);
 
+
+	// shader uniforms
 	uniformVec3(cubeProgram, "light.ambient", vec3fifth);
 	uniformVec3(cubeProgram, "light.diffuse", vec3half);
 	uniformVec3(cubeProgram, "light.specular", vec3one);
@@ -82,7 +127,12 @@ void setup(void) {
 	uniformInt(cubeProgram, "material.specular", 1); // texture 1
 	uniformFloat(cubeProgram, "material.shininess", 32.0f);
 
+	uniformVec3(cubieProgram, "light.ambient", vec3fifth);
+	uniformVec3(cubieProgram, "light.diffuse", vec3half);
+	uniformVec3(cubieProgram, "light.specular", vec3one);
+
 	uniformVec3(lightProgram, "lightColour", vec3one);
+
 
 	updateCamera(0, 0);	
 
@@ -118,6 +168,11 @@ void update(void) {
 	uniformVec3(cubeProgram, "viewPos", cam.pos);
 	uniformVec3(cubeProgram, "light.pos", lightPos);
 
+	uniformMat4(cubieProgram, "view", view);
+	uniformMat4(cubieProgram, "proj", proj);
+	uniformVec3(cubieProgram, "viewPos", cam.pos);
+	uniformVec3(cubieProgram, "light.pos", lightPos);
+
 	uniformMat4(lightProgram, "model", model);
 	uniformMat4(lightProgram, "view", view);
 	uniformMat4(lightProgram, "proj", proj);
@@ -141,6 +196,21 @@ void draw(void) {
 
 		glDrawArrays(GL_TRIANGLES, 0, verts);
 	}
+
+	glBindVertexArray(cubieVAO);	
+	glUseProgram(cubieProgram);	
+
+	for (int i = 0; i < 27; i++) {
+		mat4 model = GLM_MAT4_IDENTITY_INIT;
+
+		glm_translate(model, (vec3) { 1., 0., -10. });
+		glm_translate(model, cubiePos[i]);
+
+		uniformMat4(cubieProgram, "model", model);
+
+		glDrawArrays(GL_TRIANGLES, 0, cubieVerts);
+	}
+
 
 	glBindVertexArray(lightVAO);
 	glUseProgram(lightProgram);
@@ -191,4 +261,5 @@ void cleanup(void) {
 	glDeleteVertexArrays(1, &lightVAO);
 	glDeleteBuffers(1, &VBO);
 	glDeleteTextures(2, &texture);
+	free(cubiePos);
 }
